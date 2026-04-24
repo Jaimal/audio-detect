@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: audio-detect
+    runtime: docker
+    plan: starter
+    region: oregon
+    branch: claude/build-fork-cloud-test-E2MnT
+    healthCheckPath: /health
+    autoDeploy: true
