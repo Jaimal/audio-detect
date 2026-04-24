@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Deepfake Audio Detector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="dot"></span>
+      <h1>Deepfake Audio Detector</h1>
+    </div>
+    <div class="status" id="status">
+      <span class="pill" id="health-pill">checking…</span>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="col-left">
+      <div class="card" id="drop" tabindex="0" role="button" aria-label="Upload audio files">
+        <div class="drop-inner">
+          <svg viewBox="0 0 24 24" width="48" height="48" aria-hidden="true">
+            <path fill="currentColor" d="M12 3a1 1 0 0 1 1 1v9.59l2.3-2.3a1 1 0 1 1 1.4 1.42l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.42l2.3 2.3V4a1 1 0 0 1 1-1Zm-7 14a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Z"/>
+          </svg>
+          <p><strong>Drop audio files here</strong> or <button type="button" class="link" id="pick">browse</button></p>
+          <p class="muted">flac, m4a, wav, mp3, aac, ogg — up to 50 MB each</p>
+          <input type="file" id="file-input" multiple accept="audio/*,.flac,.m4a,.wav,.mp3,.aac,.ogg" hidden />
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Queue</h2>
+          <div class="head-actions">
+            <span class="muted" id="queue-summary">idle</span>
+            <button type="button" id="clear-queue" class="btn ghost">Clear done</button>
+          </div>
+        </div>
+        <ul id="queue" class="queue"></ul>
+        <p class="empty" id="queue-empty">Nothing queued. Drop files above or try a bundled sample below.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Bundled samples</h2>
+        </div>
+        <ul id="samples" class="samples"></ul>
+      </div>
+    </section>
+
+    <section class="col-right">
+      <div class="card">
+        <div class="card-head">
+          <h2>History</h2>
+          <div class="head-actions">
+            <span class="muted" id="history-summary">0 results</span>
+            <button type="button" id="export" class="btn ghost">Export JSON</button>
+            <button type="button" id="clear-history" class="btn danger-ghost">Clear all</button>
+          </div>
+        </div>
+        <ul id="history" class="history"></ul>
+        <p class="empty" id="history-empty">No results yet. Analyzed files will be stored locally in your browser.</p>
+      </div>
+    </section>
+  </main>
+
+  <template id="tpl-queue-item">
+    <li class="queue-item" data-id="">
+      <div class="qi-main">
+        <div class="qi-title"></div>
+        <div class="qi-meta"></div>
+      </div>
+      <div class="qi-progress">
+        <div class="bar"><span></span></div>
+        <div class="qi-status"></div>
+      </div>
+      <div class="qi-actions">
+        <button type="button" class="btn ghost small qi-cancel">Cancel</button>
+      </div>
+    </li>
+  </template>
+
+  <template id="tpl-history-item">
+    <li class="history-item" data-id="">
+      <div class="hi-head">
+        <div class="hi-title">
+          <span class="verdict-pill"></span>
+          <span class="hi-name"></span>
+        </div>
+        <div class="hi-time muted"></div>
+      </div>
+      <div class="hi-bars">
+        <div class="row"><span class="label">AI</span><div class="bar ai"><span></span></div><span class="pct ai-pct"></span></div>
+        <div class="row"><span class="label">Human</span><div class="bar human"><span></span></div><span class="pct human-pct"></span></div>
+      </div>
+      <div class="hi-foot">
+        <audio controls preload="none" class="hi-audio"></audio>
+        <div class="hi-meta muted"></div>
+        <div class="hi-actions">
+          <button type="button" class="btn ghost small hi-rerun">Re-run</button>
+          <button type="button" class="btn danger-ghost small hi-delete">Delete</button>
+        </div>
+      </div>
+    </li>
+  </template>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
